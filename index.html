@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTrack - Personal Finance Manager</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+    <div class="login-card">
+        <div class="login-logo">F</div>
+        <h1>Welcome to FinTrack</h1>
+        <p>Please login to continue.</p>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password" required>
+            </div>
+
+            <p id="loginError" class="login-error"></p>
+
+            <button type="submit" class="primary-button full-button">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN APPLICATION -->
+<div class="app-shell">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-logo">F</div>
+            <span>FinTrack</span>
+        </div>
+
+        <p class="menu-label">MAIN MENU</p>
+
+        <nav class="navigation">
+            <button class="nav-link active" data-view="overview"><span>⌂</span> Overview</button>
+            <button class="nav-link" data-view="transactions"><span>⇄</span> Transactions</button>
+            <button class="nav-link" data-view="analytics"><span>▥</span> Analytics</button>
+            <button class="nav-link" data-view="budget"><span>◉</span> Budget</button>
+            <button class="nav-link" data-view="calendar"><span>▦</span> Calendar</button>
+            <button class="nav-link" data-view="print"><span>▤</span> Print Memo</button>
+            <button class="nav-link" data-view="settings"><span>⚙</span> Settings</button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <strong>FinTrack</strong>
+                <p>Manage your money smarter.</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <button id="menuToggle" class="menu-toggle">☰</button>
+                <div>
+                    <h1 id="pageTitle">Overview</h1>
+                    <p id="pageSubtitle">Welcome to your financial dashboard.</p>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="date-display" id="todayLabel"></div>
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <button id="logoutBtn" class="danger-button">Logout</button>
+            </div>
+        </header>
+
+        <!-- OVERVIEW -->
+        <section class="view-section active" id="overview">
+            <div class="summary-grid">
+                <div class="summary-card balance-card">
+                    <div class="summary-top"><span>Total Balance</span><span class="summary-icon">◈</span></div>
+                    <h2 id="balance">৳0.00</h2>
+                    <p>Available balance</p>
+                </div>
+
+                <div class="summary-card income-card">
+                    <div class="summary-top"><span>Total Income</span><span class="summary-icon">↗</span></div>
+                    <h2 id="totalIncome">৳0.00</h2>
+                    <p>Total money received</p>
+                </div>
+
+                <div class="summary-card expense-card">
+                    <div class="summary-top"><span>Total Expense</span><span class="summary-icon">↘</span></div>
+                    <h2 id="totalExpense">৳0.00</h2>
+                    <p>Total money spent</p>
+                </div>
+            </div>
+
+            <div class="content-card recent-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Recent Transactions</h2>
+                        <p>Your latest financial activities</p>
+                    </div>
+                    <button class="text-button" data-go="transactions">View All →</button>
+                </div>
+
+                <div id="recentTransactionList"></div>
+
+                <div class="empty-message" id="recentEmpty">
+                    <div class="empty-icon">⇄</div>
+                    <h3>No Transactions Yet</h3>
+                    <p>Your recent transactions will appear here.</p>
+                    <button class="primary-button" data-go="transactions">Add Transaction</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRANSACTIONS -->
+        <section class="view-section" id="transactions">
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Add New Transaction</h2>
+                        <p>Record your income and expenses.</p>
+                    </div>
+                </div>
+
+                <form id="transactionForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" placeholder="Enter description" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="person">Person / Source</label>
+                            <input type="text" id="person" placeholder="Enter person or source">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Amount (৳)</label>
+                            <input type="number" id="amount" placeholder="Enter amount" min="0.01" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transactionDate">Date</label>
+                            <input type="date" id="transactionDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transactionTime">Time</label>
+                            <input type="time" id="transactionTime" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type">Transaction Type</label>
+                            <select id="type" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="Salary">Salary</option>
+                                <option value="Business">Business</option>
+                                <option value="Food">Food</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Education">Education</option>
+                                <option value="Bills">Bills</option>
+                                <option value="Health">Health</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="primary-button">+ Add Transaction</button>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Transaction History</h2>
+                        <p>Manage all your transactions.</p>
+                    </div>
+                    <button id="exportBtn" class="secondary-button">Export CSV</button>
+                </div>
+
+                <div class="filter-grid">
+                    <input type="text" id="searchTransaction" placeholder="Search transactions...">
+                    <input type="month" id="reportMonth">
+                    <input type="date" id="filterDate">
+
+                    <select id="sortDate">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+
+                    <button id="clearFilters" class="secondary-button">Clear Filters</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Person / Source</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionList"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-message" id="transactionEmpty">No transactions found.</div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section class="view-section" id="analytics">
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Expense Analytics</h2>
+                        <p>Understand where your money goes.</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Category Summary</h2>
+                        <p>Expense breakdown by category.</p>
+                    </div>
+                </div>
+                <div id="categorySummary"></div>
+            </div>
+        </section>
+
+        <!-- BUDGET -->
+        <section class="view-section" id="budget">
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Monthly Budget</h2>
+                        <p>Set and manage your monthly spending limit.</p>
+                    </div>
+                </div>
+
+                <div class="budget-page-grid">
+                    <div class="form-group">
+                        <label for="budgetMonth">Select Month</label>
+                        <input type="month" id="budgetMonth">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budgetInput">Monthly Budget (৳)</label>
+                        <input type="number" id="budgetInput" min="0" step="0.01" placeholder="Enter budget amount">
+                    </div>
+
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button id="setBudget" class="primary-button full-button">Save Budget</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Budget Overview</h2>
+                        <p>Your monthly spending progress.</p>
+                    </div>
+                </div>
+
+                <h2 class="budget-big-number" id="budgetDisplay">৳0.00</h2>
+                <p id="budgetStatus">No budget set for this month.</p>
+                <div class="progress-track">
+                    <div class="progress-fill" id="budgetProgress"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALENDAR -->
+        <section class="view-section" id="calendar">
+            <div class="content-card">
+                <div class="calendar-header">
+                    <button id="calendarPrev" class="secondary-button">←</button>
+                    <h2 id="calendarMonth">Month Year</h2>
+                    <button id="calendarNext" class="secondary-button">→</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+        </section>
+
+        <!-- PRINT MEMO -->
+        <section class="view-section" id="print">
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Financial Memo</h2>
+                        <p>Generate and print your monthly financial report.</p>
+                    </div>
+                    <button id="printBtn" class="primary-button">Print Memo</button>
+                </div>
+
+                <div class="report-month">
+                    <label for="printMonth">Select Report Month</label>
+                    <input type="month" id="printMonth">
+                </div>
+
+                <div id="printMemo">
+                    <div class="memo-header">
+                        <h1>FinTrack</h1>
+                        <p>Personal Finance Statement</p>
+                        <p id="memoDate"></p>
+                    </div>
+
+                    <div class="report-summary">
+                        <div><span>Total Income</span><h2 id="memoIncome">৳0.00</h2></div>
+                        <div><span>Total Expense</span><h2 id="memoExpense">৳0.00</h2></div>
+                        <div><span>Balance</span><h2 id="memoBalance">৳0.00</h2></div>
+                        <div><span>Monthly Budget</span><h2 id="memoBudget">৳0.00</h2></div>
+                    </div>
+
+                    <h3>Transaction Details</h3>
+
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="memoTransactionList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view-section" id="settings">
+            <div class="content-card">
+                <div class="card-heading">
+                    <div>
+                        <h2>Account Settings</h2>
+                        <p>Change your login username and password.</p>
+                    </div>
+                </div>
+
+                <form id="settingsForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="currentUsername">Current Username</label>
+                            <input type="text" id="currentUsername" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newUsername">New Username</label>
+                            <input type="text" id="newUsername" placeholder="Enter new username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="primary-button">Update Account</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="main-footer">
+            <p>© <span id="footerYear"></span> FinTrack. All rights reserved.</p>
+            <button id="clearAllBtn" class="danger-button">Clear All Data</button>
+        </footer>
+
+    </main>
+</div>
+
+<!-- EDIT TRANSACTION MODAL -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <div class="card-heading">
+            <div>
+                <h2>Edit Transaction</h2>
+                <p>Update your transaction details.</p>
+            </div>
+            <button type="button" id="cancelEdit" class="close-button">×</button>
+        </div>
+
+        <form id="editForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <input type="text" id="editDescription" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPerson">Person / Source</label>
+                    <input type="text" id="editPerson">
+                </div>
+
+                <div class="form-group">
+                    <label for="editAmount">Amount (৳)</label>
+                    <input type="number" id="editAmount" min="0.01" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editDate">Date</label>
+                    <input type="date" id="editDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTime">Time</label>
+                    <input type="time" id="editTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editType">Type</label>
+                    <select id="editType">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editCategory">Category</label>
+                    <select id="editCategory">
+                        <option value="Salary">Salary</option>
+                        <option value="Business">Business</option>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Education">Education</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Health">Health</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" id="cancelEditBottom" class="secondary-button">Cancel</button>
+                <button type="submit" class="primary-button">Update Transaction</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
